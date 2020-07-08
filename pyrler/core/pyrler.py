@@ -49,10 +49,6 @@ class _Parler:
         url = self.parler_url + route
         response = self.session.get(cookies=self.cookies, url=url, **kwargs)
         logger.info(response.json())
-        print(response.headers)
-        # print(response.url)
-        # print(response.text)
-        print(response.raw)
         return response
 
     def _post_request(self, route, **kwargs):
