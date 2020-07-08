@@ -2,7 +2,7 @@ import os
 import sys
 import requests
 import logging
-from pyrler.utilities.wrappers import paginate, _route_update
+from pyrler.utilities.wrappers import paginate
 from pyrler.utilities.logger import logger
 
 
@@ -48,6 +48,7 @@ class _Parler:
         """
         url = self.parler_url + route
         response = self.session.get(cookies=self.cookies, url=url, **kwargs)
+        print(response.headers)
         logger.info(response.json())
         return response
 
@@ -437,7 +438,7 @@ class Messaging(_Parler):
         :param kwargs:
         :return:
         """
-        route = _route_update("/v1/messaging/conversations/user/<id>")
+        route = f"/v1/messaging/conversations/user/{user_id}"
         request_params = {"id": user_id, "startkey": startkey, "limit": limit}
         return self._get_request(route=route, params=request_params, **kwargs)
 
@@ -451,7 +452,7 @@ class Messaging(_Parler):
         :param kwargs:
         :return:
         """
-        route = _route_update("/v1/messaging/conversations/<id>/messages")
+        route = f"/v1/messaging/conversations/{conversation_id}/messages"
         request_params = {"id": conversation_id, "startkey": startkey, "limit": limit}
         return self._get_request(route=route, params=request_params, **kwargs)
 
@@ -490,7 +491,7 @@ class Messaging(_Parler):
         :param kwargs:
         :return:
         """
-        route = _route_update("/v1/messaging/conversations/{id}/accept")
+        route = f"/v1/messaging/conversations/{conversation_id}/accept"
         request_params = {"id": conversation_id}
         return self._post_request(route=route, params=request_params, **kwargs)
 
@@ -502,7 +503,7 @@ class Messaging(_Parler):
         :param kwargs:
         :return:
         """
-        route = _route_update("/v1/messaging/conversations/{id}/deny")
+        route = f"/v1/messaging/conversations/{conversation_id}/deny"
         request_params = {"id": conversation_id}
         return self._post_request(route=route, params=request_params, **kwargs)
 
@@ -514,7 +515,7 @@ class Messaging(_Parler):
         :param kwargs:
         :return:
         """
-        route = _route_update("/v1/messaging/conversations/{id}/mute")
+        route = f"/v1/messaging/conversations/{conversation_id}/mute"
         request_params = {"id": conversation_id}
         return self._post_request(route=route, params=request_params, **kwargs)
 
@@ -869,9 +870,8 @@ class Post(_Parler):
         :param kwargs:
         :return:
         """
-        route = _route_update("/v1/post/<post_id>/impressions")
-        request_params = {"id": post_id}
-        return self._get_request(route=route, params=request_params, **kwargs)
+        route = f"/v1/post/{post_id}/impressions"
+        return self._get_request(route=route, **kwargs)
 
     @paginate
     def get_user_posts(self, post_id=None, startkey=None, follow=None, **kwargs):

@@ -2,29 +2,11 @@ import re
 import inspect
 from pyrler.utilities.logger import logger
 
-getargspec = inspect.getfullargspec
-tag_pattern = re.compile("<\w[a-zA-Z0-9_]{0,31}>")
-
-
-def _route_update(route, **kwargs):
-    """
-    Replaces <arg> in route.
-    :param route: the route to be replaced
-    :param kwargs:
-    :return: updated route
-    """
-    replace = re.findall(tag_pattern, route)
-    for tag in replace:
-        key = str(tag.split("<")[1].split(">")[0])
-        if key not in kwargs:
-            raise KeyError("Route update failed. Missing arg: " + key)
-        route = re.sub(tag, str(kwargs[key]), route)
-
-    return route
 
 def _rate_limit(response):
     retry_after = response.headers.get("Retry-After")
     pass
+
 
 def _yolo_timestamp(response):
     pass

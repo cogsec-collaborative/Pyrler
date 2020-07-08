@@ -280,8 +280,6 @@ r = p.get_user_profile(username="")
 
 Copyright 2020, Cognitive Security Collaborative
 
-API Wrapper based on code from [PyFireEye](https://github.com/EmersonElectricCo/pyFireEye).
-
 ## License
 
 AGPLv3
