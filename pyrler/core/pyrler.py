@@ -158,8 +158,7 @@ class Comment(_Parler):
         """
         route = "/v1/comment/vote"
         data = {"comment_id": comment_id, "up": upvote}
-        request_params = {"id": id}
-        return self._post_request(route=route, params=request_params, data=data, **kwargs)
+        return self._post_request(route=route, data=data, **kwargs)
 
 
 class Discover(_Parler):
@@ -191,6 +190,8 @@ class Discover(_Parler):
         :return:
         """
         route = "/v1/discover/news"
+        request_params = {"startkey": startkey}
+        return self._get_request(route=route, params=request_params, **kwargs)
 
     @paginate
     def discover_users(self, startkey=None, follow=False, **kwargs):
@@ -258,7 +259,7 @@ class Follow(_Parler):
         :return:
         """
         route = "/v1/follow/followers"
-        request_params = {"id": id, "startkey": startkey, "limit": limit}
+        request_params = {"id": user_id, "startkey": startkey, "limit": limit}
         return self._get_request(route=route, params=request_params, **kwargs)
 
     @paginate
@@ -986,7 +987,7 @@ class Profile(_Parler):
     def __init__(self, log_stdout=True, log_file=None):
         _Parler.__init__(self, log_stdout=True, log_file=None)
 
-    def get_user_profile(self, post_id=None, username=None, **kwargs):
+    def get_user_profile(self, user_id=None, username=None, **kwargs):
         """
         Returns a user profile.
         :param id: User ID
@@ -995,7 +996,8 @@ class Profile(_Parler):
         :return:
         """
         route = "/v1/profile"
-        request_params = {"id": post_id, "username": username}
+        request_params = {"id": user_id, "username": username}
+        return self._get_request(route=route, params=request_params, **kwargs)
 
 
     def get_profile_settings(self, **kwargs):

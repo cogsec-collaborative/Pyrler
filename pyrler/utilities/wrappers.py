@@ -32,7 +32,7 @@ def _yolo_timestamp(response):
 
 def paginate(func):
     def func_wrapper(*args, **kwargs):
-        if kwargs['follow']:
+        if kwargs.get("follow"):
             data = []
             if kwargs.get("startkey"):
                 startkey = kwargs.get("startkey")
