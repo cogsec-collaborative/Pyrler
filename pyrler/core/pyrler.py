@@ -4,6 +4,7 @@ import requests
 import logging
 from pyrler.utilities.wrappers import paginate
 from pyrler.utilities.logger import logger
+from pyrler.utilities.client import client
 
 
 class _Parler:
@@ -20,7 +21,7 @@ class _Parler:
         self.cookies = {'mst': self.mst_cookie, 'jst': self.jst_cookie}
 
         self.logger = self._logger()
-        self.session = self._session()
+        self.session = client()
 
     def _logger(self):
         if self.log_stdout:
@@ -34,9 +35,6 @@ class _Parler:
             logger.addHandler(file_handler)
         return logger
 
-    def _session(self):
-        session = requests.Session()
-        return session
 
     def _get_request(self, route, **kwargs):
         """
@@ -48,7 +46,6 @@ class _Parler:
         """
         url = self.parler_url + route
         response = self.session.get(cookies=self.cookies, url=url, **kwargs)
-        print(response.headers)
         logger.info(response.json())
         return response
 

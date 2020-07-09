@@ -1,11 +1,4 @@
-import re
-import inspect
 from pyrler.utilities.logger import logger
-
-
-def _rate_limit(response):
-    retry_after = response.headers.get("Retry-After")
-    pass
 
 
 def _yolo_timestamp(response):
@@ -23,7 +16,7 @@ def paginate(func):
             while True:
                 r = func(startkey=startkey, *args, **kwargs)
                 data.append(r)
-                if r.json()["last"] == True:
+                if r.json().get("last"):
                     break
                 startkey = r.json()["next"]
             return data
