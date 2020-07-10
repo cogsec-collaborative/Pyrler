@@ -49,7 +49,7 @@ Wow. Much shitposting.
 
 Take a look at `pyrler.core.pyrler.py` for the complete list of methods.
 
-Methods return a `requests.Response` object by default.
+Methods return a dict by default and a list of dicts when `follow=True`.
 
 ### Comment
 

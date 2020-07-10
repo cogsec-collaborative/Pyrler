@@ -3,7 +3,7 @@ import sys
 import requests
 import logging
 from pyrler.utilities.wrappers import paginate
-from pyrler.utilities.logger import logger
+from pyrler.utilities.logger import logger, setup_handlers
 from pyrler.utilities.client import client
 
 
@@ -12,29 +12,16 @@ class _Parler:
     Base class for Parler API endpoints.
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
+    def __init__(self, log_stdout, log_file, log_level):
         self.parler_url = "https://api.parler.com"
         self.log_stdout = log_stdout
         self.log_file = log_file
+        self.log_level = log_level
         self.mst_cookie = os.environ['MST_COOKIE']
         self.jst_cookie = os.environ['JST_COOKIE']
         self.cookies = {'mst': self.mst_cookie, 'jst': self.jst_cookie}
-
-        self.logger = self._logger()
+        setup_handlers(log_stdout=log_stdout, log_file=log_file, log_level=log_level)
         self.session = client()
-
-    def _logger(self):
-        if self.log_stdout:
-            stdout_handler = logging.StreamHandler(sys.stdout)
-            # stdout_handler.setLevel(logging.INFO)
-            logger.addHandler(stdout_handler)
-
-        if self.log_file:
-            file_handler = logging.FileHandler(filename=self.log_file, mode='a+')
-            # file_handler.setLevel(logging.INFO)
-            logger.addHandler(file_handler)
-        return logger
-
 
     def _get_request(self, route, **kwargs):
         """
@@ -46,6 +33,7 @@ class _Parler:
         """
         url = self.parler_url + route
         response = self.session.get(cookies=self.cookies, url=url, **kwargs)
+        logger.debug(response.headers)
         logger.info(response.json())
         return response
 
@@ -59,6 +47,8 @@ class _Parler:
         """
         url = self.parler_url + route
         response = self.session.post(cookies=self.cookies, url=url, **kwargs)
+        logger.debug(response.headers)
+        logger.info(response.json())
         return response
 
     def _patch_request(self, route, **kwargs):
@@ -71,6 +61,7 @@ class _Parler:
         """
         url = self.parler_url + route
         response = self.session.patch(cookies=self.cookies, url=url, **kwargs)
+        logger.info(response.json())
         return response
 
 
@@ -79,8 +70,8 @@ class Comment(_Parler):
     Comments
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     def get_comment(self, comment_id=None, startkey=None, **kwargs):
         """
@@ -160,8 +151,8 @@ class Discover(_Parler):
     Discover
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def discover_hashtags(self, startkey=None, follow=False, **kwargs):
@@ -217,8 +208,8 @@ class Feed(_Parler):
     Feed
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def get_feed(self, startkey=None, limit=None, follow=False, **kwargs):
@@ -239,8 +230,8 @@ class Follow(_Parler):
     Follow
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def get_followers(self, user_id=None, startkey=None, limit=None, follow=False, **kwargs):
@@ -359,8 +350,8 @@ class Hashtag(_Parler):
     Hashtag
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def search(self, search=None, startkey=None, limit=None, follow=False, **kwargs):
@@ -382,8 +373,8 @@ class Identity(_Parler):
     Identity
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     def get_user_verification_status(self, **kwargs):
         route = "/v1/identity/status"
@@ -395,8 +386,8 @@ class Messaging(_Parler):
     Messaging
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def get_conversations(self, startkey=None, limit=None, follow=False, **kwargs):
@@ -534,8 +525,8 @@ class Moderation(_Parler):
     Moderation
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def get_approved_comments(self, organization=None, startkey=None, limit=None, reverse=True, follow=False, **kwargs):
@@ -713,8 +704,8 @@ class News(_Parler):
     News
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def get_news(self, startkey=None, limit=None, follow=False, **kwargs):
@@ -749,8 +740,8 @@ class Notification(_Parler):
     Notification
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def get_notifications(self, startkey=None, limit=None, follow=False, **kwargs):
@@ -812,8 +803,8 @@ class Photo(_Parler):
     Photo
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     def get_photo(self, photo_id=None, **kwargs):
         """
@@ -832,8 +823,8 @@ class Post(_Parler):
     Post
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     def get_post(self, post_id=None, **kwargs):
         """
@@ -977,8 +968,8 @@ class Profile(_Parler):
     Profile
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     def get_user_profile(self, user_id=None, username=None, **kwargs):
         """
@@ -1077,8 +1068,8 @@ class User(_Parler):
     User
     """
 
-    def __init__(self, log_stdout=True, log_file=None):
-        _Parler.__init__(self, log_stdout=True, log_file=None)
+    def __init__(self, log_stdout=True, log_file=None, log_level=None):
+        _Parler.__init__(self, log_stdout, log_file, log_level)
 
     @paginate
     def get_blocked_users(self, startkey=None, follow=None, **kwargs):
