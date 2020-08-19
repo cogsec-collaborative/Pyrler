@@ -5,7 +5,7 @@ logger = logging.getLogger('log')
 
 
 def setup_handlers(log_stdout=True, log_file=None, log_level=None):
-    print(log_level)
+    # print(log_level)
     if log_level == "INFO":
         logger.setLevel(logging.INFO)
     elif log_level == "DEBUG":
