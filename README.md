@@ -110,7 +110,7 @@ r = p.get_followers(user_id="user_id")
 Get the accounts a user is following.
 ```
 p = pyrler.Follow()
-r = p.get_followers(user_id="user_id")
+r = p.get_following(user_id="user_id")
 ```
 
 Follow a user.
