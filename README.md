@@ -278,17 +278,17 @@ r = p.get_user_profile(username="")
 ## Network 
 
 If you've collected some Parler post data, you can create a network of their mentions in Gephi with: 
-
+```
 pyrler/utilities/network.py data.jsonl network_of_data.gexf
-
+```
 Create a network of their hashtags. 
-
+```
 pyrler/utilities/network.py --hashtags data.jsonl network_of_data.gexf
-
+```
 Create a network of their echos.
-
+```
 pyrler/utilities/network.py --echo data.jsonl network_of_data.gexf
-
+```
 Additionally if you want to convert the network into a dynamic network with timeline enabled (i.e. nodes will appear and disappear according to their  attributes), you can open up your GEXF file in Gephi and follow [these instructions](https://seinecle.github.io/gephi-tutorials/generated-html/converting-a-network-with-dates-into-dynamic.html). Note that in network_of_data.gexf there is a column for "start_date" (which is the day the post was created) but none for "end_date" and that in the dynamic timeline, the nodes will appear on the screen at their start date and stay on screen forever after.  For the "Time Interval creation options" pop-up in Gephi, the "Start time column" should be "start_date", the "End time column" should be empty, the "Parse dates" should be selected, and the Date format should be the last option, "dd/MM/yyyy HH:mm:ss".
 
 ## Credits
