@@ -1,5 +1,9 @@
 test.py
 
+# We use requirements.txt for this project
+Pipfile
+Pipfile.lock
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
