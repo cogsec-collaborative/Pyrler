@@ -30,6 +30,7 @@ def client():
 
     adapter = TimeoutHTTPAdapter(timeout=2, max_retries=retry_strategy)
     session = requests.Session()
+    session.headers["User-Agent"] = "Parler%20Staging/545 CFNetwork/978.0.7 Darwin 18.7.0"
     session.mount("https://", adapter)
     session.mount("http://", adapter)
 
