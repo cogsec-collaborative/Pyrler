@@ -26,28 +26,36 @@ Both stdout and file handlers can be enabled together.
 
 ### Pagination
 
-Pyrler pulls only the first page of results by default.  To use pagination pass a function the `follow` arg.
+Pyrler pulls only the first page of results by default.  To use pagination pass a truthy value to the `follow` argument.
 
 Parler pages are indexed by `startkey` and each response returns a `next` value used to access the next page.
 
 Let's look at a user's post history. First we find the user's `id` by fetching their profile. 
 ```
 profile = pyrler.Profile()
-profile_response = profile.get_user_profile(username="AltCyberCommand")
+profile_response = profile.get_user_profile(username="SeanHannity")
 user_id = profile_response.json().get("id")
 ```
 
 Now we fetch their post history starting with the first page of data.
 ```
 p = pyrler.Post()
-r = p.get_user_posts(id=user_id, startkey=None, follow=True)
+r = p.get_user_posts(user_id=user_id, startkey=None, follow=True)
 ```
+
+You can specify the `endkey` argument to stop pagination after a certain time. `endkey` must be formatted as a timestamp (as Parler returns for its `prev`/`next` keys). For example:
+
+```
+r = p.get_user_posts(user_id=user_id, startkey=None, endkey="2021-02-16T14:53:30.429Z_322497", follow=True)
+```
+
+Note that you may still receive results earlier than `endkey` if they are on a page whose last result is _after_ `endkey`. `endkey` simply prevents pagination from continuing further back in time.
 
 Wow. Much shitposting.
 
 ## Methods
 
-Take a look at `pyrler.core.pyrler.py` for the complete list of methods.
+Take a look at `pyrler/core/pyrler.py` for the complete list of methods.
 
 Methods return a dict by default and a list of dicts when `follow=True`.
 
