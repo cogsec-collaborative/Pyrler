@@ -15,6 +15,13 @@ def paginate(func):
             else:
                 startkey = None
 
+            # End at the user defined index otherwise go back as far as possible.
+            if kwargs.get("endkey"):
+                endkey = kwargs.get("endkey")
+                del kwargs["endkey"]
+            else:
+                endkey = None
+
             # Fetch pages until we've got them or something breaks.
             while True:
                 r = func(startkey=startkey, *args, **kwargs)
@@ -39,7 +46,12 @@ def paginate(func):
                     logger.debug("Next page could not be returned. Check requests debug log.")
                     break
 
+                if endkey is not None and r.json().get("next") < endkey:
+                    logger.debug("Next page is earlier than endkey!")
+                    break
+
                 startkey = r.json().get("next")
+            
             return data
         else:
             return func(*args, **kwargs)
