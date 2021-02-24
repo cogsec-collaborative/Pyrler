@@ -33,7 +33,7 @@ Parler pages are indexed by `startkey` and each response returns a `next` value 
 Let's look at a user's post history. First we find the user's `id` by fetching their profile. 
 ```
 profile = pyrler.Profile()
-profile_response = profile.get_user_profile(username="SeanHannity")
+profile_response = profile.get_user_profile(username="AltCyberCommand")
 user_id = profile_response.json().get("id")
 ```
 
