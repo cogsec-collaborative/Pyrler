@@ -26,7 +26,7 @@ Both stdout and file handlers can be enabled together.
 
 ### Pagination
 
-Pyrler pulls only the first page of results by default.  To use pagination pass a function the `follow` arg.
+Pyrler pulls only the first page of results by default.  To use pagination pass a truthy value to the `follow` argument.
 
 Parler pages are indexed by `startkey` and each response returns a `next` value used to access the next page.
 
@@ -40,14 +40,22 @@ user_id = profile_response.json().get("id")
 Now we fetch their post history starting with the first page of data.
 ```
 p = pyrler.Post()
-r = p.get_user_posts(id=user_id, startkey=None, follow=True)
+r = p.get_user_posts(user_id=user_id, startkey=None, follow=True)
 ```
+
+You can specify the `endkey` argument to stop pagination after a certain time. `endkey` must be formatted as a timestamp (as Parler returns for its `prev`/`next` keys). For example:
+
+```
+r = p.get_user_posts(user_id=user_id, startkey=None, endkey="2021-02-16T14:53:30.429Z_322497", follow=True)
+```
+
+Note that you may still receive results earlier than `endkey` if they are on a page whose last result is _after_ `endkey`. `endkey` simply prevents pagination from continuing further back in time.
 
 Wow. Much shitposting.
 
 ## Methods
 
-Take a look at `pyrler.core.pyrler.py` for the complete list of methods.
+Take a look at `pyrler/core/pyrler.py` for the complete list of methods.
 
 Methods return a dict by default and a list of dicts when `follow=True`.
 
@@ -110,7 +118,7 @@ r = p.get_followers(user_id="user_id")
 Get the accounts a user is following.
 ```
 p = pyrler.Follow()
-r = p.get_followers(user_id="user_id")
+r = p.get_following(user_id="user_id")
 ```
 
 Follow a user.
@@ -275,6 +283,21 @@ p = pyrler.Profile()
 r = p.get_user_profile(username="")
 ```
 
+## Network 
+
+If you've collected some Parler post data, you can create a network of their mentions in Gephi with: 
+```
+pyrler/utilities/network.py data.jsonl network_of_data.gexf
+```
+Create a network of their hashtags. 
+```
+pyrler/utilities/network.py --hashtags data.jsonl network_of_data.gexf
+```
+Create a network of their echos.
+```
+pyrler/utilities/network.py --echo data.jsonl network_of_data.gexf
+```
+Additionally if you want to convert the network into a dynamic network with timeline enabled (i.e. nodes will appear and disappear according to their  attributes), you can open up your GEXF file in Gephi and follow [these instructions](https://seinecle.github.io/gephi-tutorials/generated-html/converting-a-network-with-dates-into-dynamic.html). Note that in network_of_data.gexf there is a column for "start_date" (which is the day the post was created) but none for "end_date" and that in the dynamic timeline, the nodes will appear on the screen at their start date and stay on screen forever after.  For the "Time Interval creation options" pop-up in Gephi, the "Start time column" should be "start_date", the "End time column" should be empty, the "Parse dates" should be selected, and the Date format should be the last option, "dd/MM/yyyy HH:mm:ss".
 
 ## Credits
 

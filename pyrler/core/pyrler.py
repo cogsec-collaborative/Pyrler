@@ -862,42 +862,45 @@ class Post(_Parler):
         return self._get_request(route=route, **kwargs)
 
     @paginate
-    def get_user_posts(self, post_id=None, startkey=None, follow=None, **kwargs):
+    def get_user_posts(self, user_id=None, post_id=None, startkey=None, follow=None, **kwargs):
         """
         Returns posts created by a user.
-        :param id: User ID
+        :param user_id: User ID
         :param startkey:
         :param kwargs:
         :return:
         """
+        # We fallback to `post_id` to avoid breaking API changes
         route = "/v1/post/creator"
-        request_params = {"id": post_id, "startkey": startkey}
+        request_params = {"id": user_id or post_id, "startkey": startkey}
         return self._get_request(route=route, params=request_params, **kwargs)
 
     @paginate
-    def get_liked_posts(self, post_id=None, startkey=None, follow=None, **kwargs):
+    def get_liked_posts(self, user_id=None, post_id=None, startkey=None, follow=None, **kwargs):
         """
         Returns posts liked by a user.
-        :param post_id: post ID
+        :param user_id: user ID
         :param startkey:
         :param kwargs:
         :return:
         """
+        # We fallback to `post_id` to avoid breaking API changes
         route = "/v1/post/creator/liked"
-        request_params = {"id": post_id, "startkey": startkey}
+        request_params = {"id": user_id or post_id, "startkey": startkey}
         return self._get_request(route=route, params=request_params, **kwargs)
 
     @paginate
-    def get_creator_media(self, post_id=None, startkey=None, follow=None, **kwargs):
+    def get_creator_media(self, user_id=None, post_id=None, startkey=None, follow=None, **kwargs):
         """
         Returns media posted by a user.
-        :param post_id: User ID
+        :param user_id: User ID
         :param startkey:
         :param kwargs:
         :return:
         """
+        # We fallback to `post_id` to avoid breaking API changes
         route = "/v1/post/creator/media"
-        request_params = {"id": post_id, "startkey": startkey}
+        request_params = {"id": user_id or post_id, "startkey": startkey}
         return self._get_request(route=route, params=request_params, **kwargs)
 
     @paginate
