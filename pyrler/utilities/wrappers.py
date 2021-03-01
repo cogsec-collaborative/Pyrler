@@ -16,7 +16,7 @@ def paginate(func):
                 startkey = None
 
             # End at the user defined index otherwise go back as far as possible.
-            if kwargs.get("endkey"):
+            if "endkey" in kwargs:
                 endkey = kwargs.get("endkey")
                 del kwargs["endkey"]
             else:
